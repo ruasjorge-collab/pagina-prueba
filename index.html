@@ -1,653 +1,728 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cotizador de Cajas - Cartón Corrugado</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --kraft: #C8A882;
-            --kraft-dark: #9D7E54;
-            --cardboard: #D4A574;
-            --ink-black: #1a1a1a;
-            --ink-blue: #2B4C7E;
-            --paper-white: #F5F1E8;
-            --corrugation: #E8DCC4;
-            --shadow: rgba(0, 0, 0, 0.15);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXO Celulares — Comprá, vendé y reparé tu celular</title>
+<meta name="description" content="NEXO Celulares: venta de celulares reacondicionados con garantía, reparación express y el mejor precio por tu usado.">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
+  /* ============================================================
+     TOKENS — Paleta, tipografía y variables globales
+     ============================================================ */
+  :root{
+    --negro: #0c0c0d;
+    --negro-suave: #17171a;
+    --gris-linea: #2b2b2f;
+    --gris-texto: #a3a3ab;
+    --blanco: #f7f7f5;
+    --rojo: #e0182c;
+    --rojo-oscuro: #a3101f;
 
-        body {
-            font-family: 'Work Sans', sans-serif;
-            background: linear-gradient(135deg, var(--paper-white) 0%, var(--corrugation) 100%);
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
+    --font-display: 'Nexo Display', 'Arial Narrow', Arial, sans-serif;
+    --font-texto: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(200, 168, 130, 0.03) 2px, rgba(200, 168, 130, 0.03) 4px),
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(200, 168, 130, 0.03) 2px, rgba(200, 168, 130, 0.03) 4px);
-            pointer-events: none;
-            z-index: 1;
-        }
+    --max: 1120px;
+  }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 2;
-        }
+  *{ box-sizing: border-box; margin:0; padding:0; }
 
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-            animation: slideDown 0.8s ease-out;
-        }
+  html{ scroll-behavior: smooth; }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+  body{
+    background: var(--negro);
+    color: var(--blanco);
+    font-family: var(--font-texto);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
 
-        h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 4.5rem;
-            color: var(--ink-black);
-            letter-spacing: 4px;
-            margin-bottom: 10px;
-            text-shadow: 3px 3px 0 var(--kraft);
-            line-height: 1;
-        }
+  img, svg{ display:block; max-width:100%; }
 
-        .subtitle {
-            font-size: 1.1rem;
-            color: var(--ink-blue);
-            font-weight: 300;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+  a{ color:inherit; }
 
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            animation: fadeIn 1s ease-out 0.3s both;
-        }
+  h1,h2,h3{
+    font-family: var(--font-texto);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+  .contenedor{
+    width: 100%;
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
 
-        .card {
-            background: white;
-            border-radius: 2px;
-            padding: 40px;
-            box-shadow: 
-                8px 8px 0 var(--kraft),
-                12px 12px 20px var(--shadow);
-            border: 3px solid var(--ink-black);
-            position: relative;
-            transition: transform 0.3s ease;
-        }
+  section{ padding: 72px 0; border-top: 1px solid var(--gris-linea); }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            border: 1px dashed var(--kraft);
-            pointer-events: none;
-        }
+  .boton{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--rojo);
+    color: var(--blanco);
+    border: none;
+    padding: 16px 28px;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .boton:hover{ background: var(--rojo-oscuro); }
+  .boton:active{ transform: scale(0.98); }
+  .boton:focus-visible, a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline: 2px solid var(--rojo);
+    outline-offset: 3px;
+  }
 
-        .card:hover {
-            transform: translateY(-5px);
-        }
+  .boton--ghost{
+    background: transparent;
+    border: 1px solid var(--gris-linea);
+    color: var(--blanco);
+  }
+  .boton--ghost:hover{ border-color: var(--rojo); background: transparent; }
 
-        .card h2 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2rem;
-            color: var(--ink-blue);
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-            border-bottom: 3px solid var(--kraft);
-            padding-bottom: 10px;
-        }
+  .eyebrow{
+    color: var(--rojo);
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
 
-        .form-group {
-            margin-bottom: 25px;
-        }
+  /* ============================================================
+     HEADER / NAV
+     ============================================================ */
+  .header{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(12,12,13,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--gris-linea);
+  }
+  .header .contenedor{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .logo{
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+  }
+  .logo span{ color: var(--rojo); }
 
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--ink-black);
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+  .nav-links{
+    display: none;
+    gap: 32px;
+    list-style: none;
+    font-size: 0.95rem;
+  }
+  .nav-links a{ text-decoration:none; color: var(--gris-texto); transition: color .15s ease; }
+  .nav-links a:hover{ color: var(--blanco); }
 
-        input, select {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid var(--ink-black);
-            border-radius: 0;
-            font-size: 1rem;
-            font-family: 'Work Sans', sans-serif;
-            background: var(--paper-white);
-            transition: all 0.3s ease;
-        }
+  .nav-cta{ display:none; }
 
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--ink-blue);
-            background: white;
-            box-shadow: 0 0 0 3px rgba(43, 76, 126, 0.1);
-        }
+  .menu-toggle{
+    background:none;
+    border:none;
+    color: var(--blanco);
+    font-size: 1.6rem;
+    cursor:pointer;
+    line-height:1;
+  }
 
-        input[type="number"] {
-            font-weight: 600;
-        }
+  @media (min-width: 860px){
+    .nav-links{ display:flex; }
+    .nav-cta{ display:inline-flex; }
+    .menu-toggle{ display:none; }
+  }
 
-        .dimension-inputs {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
+  /* ============================================================
+     HERO — Propuesta de valor + CTA above the fold
+     ============================================================ */
+  .hero{
+    border-top:none;
+    padding: 56px 0 64px;
+    position: relative;
+    overflow: hidden;
+  }
 
-        .dimension-inputs input {
-            text-align: center;
-        }
+  .hero .contenedor{
+    display:grid;
+    gap: 40px;
+  }
 
-        .dimension-labels {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 8px;
-            text-align: center;
-        }
+  .hero-grieta{
+    position: absolute;
+    top: -10%;
+    right: -18%;
+    width: 70vw;
+    max-width: 620px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
 
-        .dimension-labels span {
-            font-size: 0.75rem;
-            color: var(--ink-blue);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+  .hero-texto{ position: relative; z-index: 1; }
 
-        .btn {
-            width: 100%;
-            padding: 18px;
-            background: var(--ink-blue);
-            color: white;
-            border: 3px solid var(--ink-black);
-            border-radius: 0;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            box-shadow: 4px 4px 0 var(--ink-black);
-            position: relative;
-        }
+  .hero-texto h1{
+    font-size: clamp(2.1rem, 7vw, 3.4rem);
+    margin: 14px 0 20px;
+  }
 
-        .btn:hover {
-            background: var(--ink-black);
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0 var(--ink-black);
-        }
+  .hero-texto p{
+    color: var(--gris-texto);
+    font-size: 1.05rem;
+    max-width: 46ch;
+    margin-bottom: 28px;
+  }
 
-        .btn:active {
-            transform: translate(4px, 4px);
-            box-shadow: 0 0 0 var(--ink-black);
-        }
+  .hero-acciones{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
 
-        .results-card {
-            background: linear-gradient(135deg, var(--kraft) 0%, var(--cardboard) 100%);
-            min-height: 400px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+  .hero-datos{
+    display:flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--gris-linea);
+    padding-top: 20px;
+  }
+  .hero-dato .num{
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--rojo);
+    display:block;
+  }
+  .hero-dato .etq{
+    color: var(--gris-texto);
+    font-size: 0.85rem;
+  }
 
-        .results-card h2 {
-            color: white;
-            border-bottom-color: white;
-        }
+  @media (min-width: 860px){
+    .hero .contenedor{
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: center;
+      min-height: 70vh;
+    }
+  }
 
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 2px dashed rgba(255, 255, 255, 0.3);
-            animation: slideInRight 0.5s ease-out both;
-        }
+  /* ============================================================
+     BENEFICIOS — 3 beneficios clave
+     ============================================================ */
+  .beneficios-titulo{
+    max-width: 60ch;
+    margin-bottom: 40px;
+  }
+  .beneficios-titulo h2{ font-size: clamp(1.7rem, 4vw, 2.3rem); margin-top: 10px; }
 
-        .result-item:last-child {
-            border-bottom: none;
-        }
+  .lista-beneficios{
+    list-style:none;
+    display:grid;
+    gap: 0;
+  }
 
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
+  .beneficio{
+    display:grid;
+    grid-template-columns: 44px 1fr;
+    gap: 18px;
+    padding: 28px 0;
+    border-top: 1px solid var(--gris-linea);
+  }
+  .beneficio:last-child{ border-bottom: 1px solid var(--gris-linea); }
 
-        .result-label {
-            font-size: 0.9rem;
-            color: var(--ink-black);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+  .beneficio .icono{
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--rojo);
+    border-radius: 4px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .beneficio .icono svg{ width: 22px; height: 22px; stroke: var(--rojo); }
 
-        .result-value {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.3rem;
-            color: white;
-            letter-spacing: 1px;
-        }
+  .beneficio h3{ font-size: 1.15rem; margin-bottom: 6px; }
+  .beneficio p{ color: var(--gris-texto); max-width: 56ch; font-size: 0.98rem; }
 
-        .total-price {
-            margin-top: 30px;
-            padding: 25px;
-            background: white;
-            border: 3px solid var(--ink-black);
-            text-align: center;
-            animation: pulse 2s ease-in-out infinite;
-        }
+  @media (min-width: 860px){
+    .beneficio{ grid-template-columns: 60px 1fr; align-items:start; }
+  }
 
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.02);
-            }
-        }
+  /* ============================================================
+     SOCIAL PROOF — métricas + testimonios
+     ============================================================ */
+  .prueba-social{ background: var(--negro-suave); }
 
-        .total-label {
-            font-size: 1rem;
-            color: var(--ink-blue);
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 600;
-        }
+  .metrica-fila{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    margin-bottom: 48px;
+  }
+  .metrica .num{
+    font-size: clamp(2rem, 6vw, 2.8rem);
+    font-weight: 800;
+    color: var(--rojo);
+    display:block;
+  }
+  .metrica .etq{ color: var(--gris-texto); font-size: 0.9rem; margin-top: 4px; }
 
-        .total-amount {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 3.5rem;
-            color: var(--ink-black);
-            letter-spacing: 2px;
-            line-height: 1;
-        }
+  @media (min-width: 640px){
+    .metrica-fila{ grid-template-columns: repeat(4, 1fr); }
+  }
 
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: white;
-        }
+  .testimonios{
+    display:grid;
+    gap: 20px;
+  }
+  @media (min-width: 760px){
+    .testimonios{ grid-template-columns: repeat(3, 1fr); }
+  }
 
-        .empty-state svg {
-            width: 120px;
-            height: 120px;
-            margin-bottom: 20px;
-            opacity: 0.7;
-        }
+  .testimonio{
+    border: 1px solid var(--gris-linea);
+    border-radius: 4px;
+    padding: 24px;
+    background: var(--negro);
+  }
+  .testimonio p{ font-size: 0.98rem; color: var(--blanco); margin-bottom: 16px; }
+  .testimonio footer{ color: var(--gris-texto); font-size: 0.85rem; }
+  .testimonio footer strong{ color: var(--blanco); display:block; font-size: 0.92rem; }
 
-        .empty-state p {
-            font-size: 1.1rem;
-            font-weight: 300;
-        }
+  /* ============================================================
+     PRECIO / PLAN PRINCIPAL
+     ============================================================ */
+  .precio-caja{
+    border: 1px solid var(--rojo);
+    border-radius: 6px;
+    padding: 36px 28px;
+    max-width: 560px;
+    margin: 0 auto;
+    text-align: left;
+    position: relative;
+  }
+  .precio-caja .eyebrow{ display:block; margin-bottom: 10px; }
+  .precio-caja h2{ font-size: 1.6rem; margin-bottom: 6px; }
+  .precio-caja .descripcion-plan{ color: var(--gris-texto); margin-bottom: 24px; font-size: 0.95rem; }
 
-        .info-badge {
-            display: inline-block;
-            background: var(--ink-blue);
-            color: white;
-            padding: 4px 10px;
-            font-size: 0.75rem;
-            margin-left: 8px;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
+  .precio-monto{
+    display:flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .precio-monto .valor{ font-size: 2.6rem; font-weight: 800; }
+  .precio-monto .periodo{ color: var(--gris-texto); font-size: 0.95rem; }
 
-        @media (max-width: 968px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
+  .lista-incluye{
+    list-style:none;
+    margin-bottom: 28px;
+  }
+  .lista-incluye li{
+    display:flex;
+    align-items:flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 0.95rem;
+    border-top: 1px solid var(--gris-linea);
+  }
+  .lista-incluye li:first-child{ border-top:none; }
+  .lista-incluye svg{ flex-shrink:0; width:18px; height:18px; stroke: var(--rojo); margin-top: 2px; }
 
-            h1 {
-                font-size: 3rem;
-            }
+  .precio-caja .boton{ width: 100%; justify-content:center; }
 
-            .card {
-                padding: 30px;
-            }
-        }
+  /* ============================================================
+     CTA FINAL + FORMULARIO DE CONTACTO
+     ============================================================ */
+  .cta-final{ background: var(--negro-suave); }
 
-        @media (max-width: 640px) {
-            h1 {
-                font-size: 2.5rem;
-                text-shadow: 2px 2px 0 var(--kraft);
-            }
+  .cta-grid{
+    display:grid;
+    gap: 40px;
+  }
+  @media (min-width: 860px){
+    .cta-grid{ grid-template-columns: 1fr 1fr; align-items:start; }
+  }
 
-            .dimension-inputs {
-                grid-template-columns: 1fr;
-            }
+  .cta-final h2{ font-size: clamp(1.7rem, 4vw, 2.3rem); margin: 10px 0 14px; }
+  .cta-final .cta-texto p{ color: var(--gris-texto); max-width: 42ch; }
 
-            .dimension-labels {
-                grid-template-columns: 1fr;
-            }
-        }
+  .formulario{
+    display:grid;
+    gap: 14px;
+  }
 
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: help;
-            margin-left: 5px;
-            width: 18px;
-            height: 18px;
-            background: var(--kraft);
-            color: white;
-            border-radius: 50%;
-            text-align: center;
-            font-size: 12px;
-            line-height: 18px;
-            font-weight: bold;
-        }
+  .campo{ display:grid; gap: 6px; }
+  .campo label{ font-size: 0.85rem; color: var(--gris-texto); }
 
-        .tooltip:hover::after {
-            content: attr(data-tip);
-            position: absolute;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--ink-black);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 4px;
-            white-space: nowrap;
-            font-size: 0.8rem;
-            font-weight: normal;
-            z-index: 10;
-        }
-    </style>
+  .campo input, .campo textarea{
+    background: var(--negro);
+    border: 1px solid var(--gris-linea);
+    border-radius: 4px;
+    padding: 13px 14px;
+    color: var(--blanco);
+    font-size: 0.95rem;
+    font-family: inherit;
+    width: 100%;
+  }
+  .campo input:focus, .campo textarea:focus{
+    border-color: var(--rojo);
+    outline: none;
+  }
+
+  .campo textarea{ resize: vertical; min-height: 90px; }
+
+  .formulario .boton{ justify-content:center; margin-top: 4px; }
+
+  .form-mensaje{
+    font-size: 0.9rem;
+    padding-top: 4px;
+    min-height: 1.2em;
+  }
+  .form-mensaje.ok{ color: #37c25a; }
+  .form-mensaje.error{ color: var(--rojo); }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer.pie{
+    border-top: 1px solid var(--gris-linea);
+    padding: 32px 0;
+  }
+  .pie .contenedor{
+    display:flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 0.85rem;
+    color: var(--gris-texto);
+  }
+  @media (min-width: 640px){
+    .pie .contenedor{ flex-direction: row; justify-content: space-between; align-items:center; }
+  }
+
+  /* Respeto a usuarios que prefieren menos movimiento */
+  @media (prefers-reduced-motion: reduce){
+    *{ scroll-behavior: auto !important; transition: none !important; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>COTIZADOR</h1>
-            <p class="subtitle">Cajas de Cartón Corrugado</p>
-        </header>
 
-        <div class="main-content">
-            <div class="card">
-                <h2>Configuración</h2>
-                <form id="quoteForm">
-                    <div class="form-group">
-                        <label>
-                            Dimensiones (cm)
-                            <span class="tooltip" data-tip="Largo x Ancho x Alto en centímetros">?</span>
-                        </label>
-                        <div class="dimension-labels">
-                            <span>Largo</span>
-                            <span>Ancho</span>
-                            <span>Alto</span>
-                        </div>
-                        <div class="dimension-inputs">
-                            <input type="number" id="length" min="1" step="0.1" placeholder="30" required>
-                            <input type="number" id="width" min="1" step="0.1" placeholder="20" required>
-                            <input type="number" id="height" min="1" step="0.1" placeholder="15" required>
-                        </div>
-                    </div>
+<!-- =================== HEADER / NAV =================== -->
+<header class="header">
+  <div class="contenedor">
+    <div class="logo">NE<span>X</span>O</div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#beneficios">Beneficios</a></li>
+        <li><a href="#opiniones">Opiniones</a></li>
+        <li><a href="#plan">Precio</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+    <a href="#contacto" class="boton nav-cta">Escribinos</a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+  </div>
+</header>
 
-                    <div class="form-group">
-                        <label for="corrugation">Tipo de Corrugado</label>
-                        <select id="corrugation" required>
-                            <option value="">Seleccionar...</option>
-                            <option value="simple">Simple (Onda C)</option>
-                            <option value="doble">Doble (BC)</option>
-                            <option value="triple">Triple (AAA)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="quantity">
-                            Cantidad
-                            <span class="info-badge">Descuentos por volumen</span>
-                        </label>
-                        <input type="number" id="quantity" min="1" placeholder="100" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="printing">Impresión</label>
-                        <select id="printing" required>
-                            <option value="none">Sin impresión</option>
-                            <option value="one-color">1 color</option>
-                            <option value="two-color">2 colores</option>
-                            <option value="full-color">Full color</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="customization">Personalización adicional</label>
-                        <select id="customization">
-                            <option value="none">Ninguna</option>
-                            <option value="handle">Manijas troqueladas</option>
-                            <option value="window">Ventana de acetato</option>
-                            <option value="special">Diseño especial</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn">Calcular Cotización</button>
-                </form>
-            </div>
-
-            <div class="card results-card">
-                <h2>Resultados</h2>
-                <div id="results">
-                    <div class="empty-state">
-                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="10" y="20" width="80" height="60" stroke="white" stroke-width="3" fill="none"/>
-                            <line x1="10" y1="35" x2="90" y2="35" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
-                            <line x1="10" y1="50" x2="90" y2="50" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
-                            <line x1="10" y1="65" x2="90" y2="65" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
-                            <line x1="30" y1="20" x2="30" y2="80" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
-                            <line x1="50" y1="20" x2="50" y2="80" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
-                            <line x1="70" y1="20" x2="70" y2="80" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
-                        </svg>
-                        <p>Completa el formulario para ver tu cotización</p>
-                    </div>
-                </div>
-            </div>
+<!-- =================== HERO =================== -->
+<section class="hero">
+  <div class="contenedor">
+    <div class="hero-texto">
+      <span class="eyebrow">Local de celulares en tu ciudad</span>
+      <h1>Tu próximo celular, listo hoy. Con garantía real.</h1>
+      <p>Comprá reacondicionados certificados, vendé tu usado al mejor precio o arreglá tu pantalla en menos de una hora. Sin sorpresas, sin letra chica.</p>
+      <div class="hero-acciones">
+        <a href="#plan" class="boton">Ver precios</a>
+        <a href="#contacto" class="boton boton--ghost">Hablar con un asesor</a>
+      </div>
+      <div class="hero-datos">
+        <div class="hero-dato">
+          <span class="num">+4.200</span>
+          <span class="etq">equipos entregados</span>
         </div>
+        <div class="hero-dato">
+          <span class="num">12 meses</span>
+          <span class="etq">de garantía</span>
+        </div>
+        <div class="hero-dato">
+          <span class="num">45 min</span>
+          <span class="etq">promedio de reparación</span>
+        </div>
+      </div>
     </div>
 
-    <script>
-        // Precios base (en pesos argentinos)
-        const PRICING = {
-            corrugation: {
-                simple: 150,
-                doble: 280,
-                triple: 450
-            },
-            printing: {
-                none: 0,
-                'one-color': 50,
-                'two-color': 95,
-                'full-color': 180
-            },
-            customization: {
-                none: 0,
-                handle: 35,
-                window: 60,
-                special: 120
-            },
-            // Factor de área (precio por cm² de cartón)
-            areaFactor: 0.08
-        };
+    <!-- Gráfico decorativo tipo pantalla / señal, en SVG, sin dependencias externas -->
+    <svg class="hero-grieta" viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="40" y="20" width="260" height="460" rx="28" stroke="#2b2b2f" stroke-width="2"/>
+      <rect x="70" y="60" width="200" height="380" rx="4" stroke="#2b2b2f" stroke-width="2"/>
+      <path d="M170 80 L210 180 L160 210 L230 340 L190 250 L240 220 L170 80Z" stroke="#e0182c" stroke-width="2" fill="none"/>
+      <circle cx="170" cy="460" r="10" stroke="#2b2b2f" stroke-width="2"/>
+    </svg>
+  </div>
+</section>
 
-        // Descuentos por cantidad
-        const DISCOUNTS = [
-            { min: 1000, discount: 0.25, label: '25%' },
-            { min: 500, discount: 0.18, label: '18%' },
-            { min: 200, discount: 0.12, label: '12%' },
-            { min: 100, discount: 0.08, label: '8%' },
-            { min: 50, discount: 0.05, label: '5%' }
-        ];
+<!-- =================== BENEFICIOS =================== -->
+<section id="beneficios">
+  <div class="contenedor">
+    <div class="beneficios-titulo">
+      <span class="eyebrow">Por qué elegirnos</span>
+      <h2>Tres razones por las que la gente vuelve</h2>
+    </div>
 
-        function calculateArea(length, width, height) {
-            // Fórmula para calcular área total de una caja rectangular desplegada
-            // 2 * (largo * ancho + ancho * alto + alto * largo)
-            return 2 * (length * width + width * height + height * length);
-        }
+    <ul class="lista-beneficios">
+      <li class="beneficio">
+        <div class="icono">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+        </div>
+        <div>
+          <h3>Garantía escrita de 12 meses</h3>
+          <p>Cada equipo reacondicionado pasa 32 controles antes de salir del local. Si algo falla, lo cambiamos o reparamos sin cargo.</p>
+        </div>
+      </li>
 
-        function getDiscount(quantity) {
-            for (let tier of DISCOUNTS) {
-                if (quantity >= tier.min) {
-                    return tier;
-                }
-            }
-            return { min: 0, discount: 0, label: '0%' };
-        }
+      <li class="beneficio">
+        <div class="icono">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+        </div>
+        <div>
+          <h3>Reparación mientras esperás</h3>
+          <p>Pantallas, baterías y módulos de carga en menos de una hora. Te avisamos por WhatsApp apenas está listo.</p>
+        </div>
+      </li>
 
-        function formatPrice(price) {
-            return new Intl.NumberFormat('es-AR', {
-                style: 'currency',
-                currency: 'ARS',
-                minimumFractionDigits: 2
-            }).format(price);
-        }
+      <li class="beneficio">
+        <div class="icono">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </div>
+        <div>
+          <h3>Te pagamos tu usado al toque</h3>
+          <p>Tasación transparente en 10 minutos y pago en el momento, en efectivo o transferencia. Vos elegís.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
 
-        document.getElementById('quoteForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+<!-- =================== SOCIAL PROOF =================== -->
+<section id="opiniones" class="prueba-social">
+  <div class="contenedor">
+    <div class="beneficios-titulo">
+      <span class="eyebrow">Números y clientes reales</span>
+      <h2>Lo que dicen quienes ya pasaron por NEXO</h2>
+    </div>
 
-            // Obtener valores
-            const length = parseFloat(document.getElementById('length').value);
-            const width = parseFloat(document.getElementById('width').value);
-            const height = parseFloat(document.getElementById('height').value);
-            const corrugation = document.getElementById('corrugation').value;
-            const quantity = parseInt(document.getElementById('quantity').value);
-            const printing = document.getElementById('printing').value;
-            const customization = document.getElementById('customization').value;
+    <div class="metrica-fila">
+      <div class="metrica">
+        <span class="num">4.8/5</span>
+        <span class="etq">calificación promedio</span>
+      </div>
+      <div class="metrica">
+        <span class="num">+4.200</span>
+        <span class="etq">equipos vendidos</span>
+      </div>
+      <div class="metrica">
+        <span class="num">7 años</span>
+        <span class="etq">en el barrio</span>
+      </div>
+      <div class="metrica">
+        <span class="num">98%</span>
+        <span class="etq">recompra o recomienda</span>
+      </div>
+    </div>
 
-            // Validar
-            if (!corrugation) {
-                alert('Por favor selecciona el tipo de corrugado');
-                return;
-            }
+    <div class="testimonios">
+      <blockquote class="testimonio">
+        <p>"Cambié la pantalla de mi celular en 40 minutos mientras hacía otros mandados. Quedó como nuevo."</p>
+        <footer><strong>Marcela R.</strong>Cliente desde 2023</footer>
+      </blockquote>
+      <blockquote class="testimonio">
+        <p>"Vendí mi iPhone viejo y me pagaron más de lo que me ofrecían en otros locales. Todo clarísimo."</p>
+        <footer><strong>Ezequiel D.</strong>Cliente desde 2022</footer>
+      </blockquote>
+      <blockquote class="testimonio">
+        <p>"Compré un reacondicionado hace 8 meses y sigue perfecto. La garantía te da tranquilidad."</p>
+        <footer><strong>Lucía P.</strong>Cliente desde 2024</footer>
+      </blockquote>
+    </div>
+  </div>
+</section>
 
-            // Calcular
-            const area = calculateArea(length, width, height);
-            const materialCost = area * PRICING.areaFactor;
-            const corrugationCost = PRICING.corrugation[corrugation];
-            const printingCost = PRICING.printing[printing];
-            const customizationCost = PRICING.customization[customization];
+<!-- =================== PRECIO / PLAN PRINCIPAL =================== -->
+<section id="plan">
+  <div class="contenedor">
+    <div class="beneficios-titulo" style="text-align:left;">
+      <span class="eyebrow">Nuestro servicio más pedido</span>
+      <h2>Reparación de pantalla, todo incluido</h2>
+    </div>
 
-            const unitPrice = materialCost + corrugationCost + printingCost + customizationCost;
-            const subtotal = unitPrice * quantity;
+    <div class="precio-caja">
+      <span class="eyebrow">Plan Express</span>
+      <h2>Cambio de pantalla</h2>
+      <p class="descripcion-plan">Para los modelos más comunes de iPhone y Samsung. Consultanos por tu modelo exacto.</p>
 
-            const discountTier = getDiscount(quantity);
-            const discountAmount = subtotal * discountTier.discount;
-            const total = subtotal - discountAmount;
+      <div class="precio-monto">
+        <span class="valor">$45.000</span>
+        <span class="periodo">precio final, sin sorpresas</span>
+      </div>
 
-            // Mostrar resultados
-            displayResults({
-                area,
-                unitPrice,
-                quantity,
-                subtotal,
-                discountTier,
-                discountAmount,
-                total,
-                length,
-                width,
-                height
-            });
-        });
+      <ul class="lista-incluye">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          Repuesto original o equivalente premium
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          Listo en menos de 1 hora
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          6 meses de garantía sobre la reparación
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          Diagnóstico gratis, sin compromiso
+        </li>
+      </ul>
 
-        function displayResults(data) {
-            const resultsDiv = document.getElementById('results');
-            
-            let html = `
-                <div style="animation-delay: 0.1s" class="result-item">
-                    <span class="result-label">Dimensiones</span>
-                    <span class="result-value">${data.length} × ${data.width} × ${data.height} cm</span>
-                </div>
-                <div style="animation-delay: 0.2s" class="result-item">
-                    <span class="result-label">Área total</span>
-                    <span class="result-value">${data.area.toFixed(2)} cm²</span>
-                </div>
-                <div style="animation-delay: 0.3s" class="result-item">
-                    <span class="result-label">Precio unitario</span>
-                    <span class="result-value">${formatPrice(data.unitPrice)}</span>
-                </div>
-                <div style="animation-delay: 0.4s" class="result-item">
-                    <span class="result-label">Cantidad</span>
-                    <span class="result-value">${data.quantity} unidades</span>
-                </div>
-                <div style="animation-delay: 0.5s" class="result-item">
-                    <span class="result-label">Subtotal</span>
-                    <span class="result-value">${formatPrice(data.subtotal)}</span>
-                </div>
-            `;
+      <a href="#contacto" class="boton">Reservar mi turno</a>
+    </div>
+  </div>
+</section>
 
-            if (data.discountTier.discount > 0) {
-                html += `
-                    <div style="animation-delay: 0.6s" class="result-item">
-                        <span class="result-label">Descuento (${data.discountTier.label})</span>
-                        <span class="result-value">-${formatPrice(data.discountAmount)}</span>
-                    </div>
-                `;
-            }
+<!-- =================== CTA FINAL + FORMULARIO =================== -->
+<section id="contacto" class="cta-final">
+  <div class="contenedor">
+    <div class="cta-grid">
+      <div class="cta-texto">
+        <span class="eyebrow">Último paso</span>
+        <h2>Contanos qué necesitás y te respondemos hoy</h2>
+        <p>Dejanos tus datos y el modelo de tu equipo. Te contactamos por WhatsApp o email en el mismo día hábil.</p>
+      </div>
 
-            html += `
-                <div class="total-price">
-                    <div class="total-label">Total</div>
-                    <div class="total-amount">${formatPrice(data.total)}</div>
-                </div>
-            `;
+      <form class="formulario" id="formContacto" novalidate>
+        <div class="campo">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre y apellido" required>
+        </div>
 
-            resultsDiv.innerHTML = html;
-        }
-    </script>
+        <div class="campo">
+          <label for="telefono">WhatsApp</label>
+          <input type="tel" id="telefono" name="telefono" placeholder="Ej: 11 2345 6789" required>
+        </div>
+
+        <div class="campo">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+        </div>
+
+        <div class="campo">
+          <label for="mensaje">Contanos qué necesitás</label>
+          <textarea id="mensaje" name="mensaje" placeholder="Modelo del celular y qué necesitás (comprar, vender o reparar)" required></textarea>
+        </div>
+
+        <button type="submit" class="boton">Enviar consulta</button>
+        <p class="form-mensaje" id="formMensaje" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- =================== FOOTER =================== -->
+<footer class="pie">
+  <div class="contenedor">
+    <span>© 2026 NEXO Celulares. Todos los derechos reservados.</span>
+    <span>Av. Siempre Viva 1234, tu ciudad · Lun a Sáb 9 a 20 hs</span>
+  </div>
+</footer>
+
+<script>
+  // ============================================================
+  // MENÚ MÓVIL — muestra/oculta la navegación en pantallas chicas
+  // ============================================================
+  (function () {
+    var toggle = document.getElementById('menuToggle');
+    var navLinks = document.querySelector('.nav-links');
+
+    // En mobile, navLinks arranca oculto por CSS (display:none);
+    // este script agrega la clase para mostrarlo como panel simple.
+    toggle.addEventListener('click', function () {
+      var expandido = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!expandido));
+
+      if (!expandido) {
+        navLinks.style.display = 'flex';
+        navLinks.style.flexDirection = 'column';
+        navLinks.style.position = 'absolute';
+        navLinks.style.top = '64px';
+        navLinks.style.left = '0';
+        navLinks.style.right = '0';
+        navLinks.style.background = '#0c0c0d';
+        navLinks.style.padding = '20px 24px';
+        navLinks.style.borderBottom = '1px solid #2b2b2f';
+        navLinks.style.gap = '18px';
+      } else {
+        navLinks.style.display = 'none';
+      }
+    });
+
+    // Cierra el menú al elegir un link (mobile)
+    navLinks.addEventListener('click', function (e) {
+      if (e.target.tagName === 'A' && window.innerWidth < 860) {
+        navLinks.style.display = 'none';
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+
+  // ============================================================
+  // FORMULARIO DE CONTACTO — validación simple en el cliente
+  // Reemplazar este bloque por la integración real (backend,
+  // Formspree, WhatsApp API, etc.) al publicar la página.
+  // ============================================================
+  (function () {
+    var form = document.getElementById('formContacto');
+    var mensaje = document.getElementById('formMensaje');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var nombre = form.nombre.value.trim();
+      var telefono = form.telefono.value.trim();
+      var email = form.email.value.trim();
+      var texto = form.mensaje.value.trim();
+
+      var emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      if (!nombre || !telefono || !email || !texto) {
+        mensaje.textContent = 'Completá todos los campos para continuar.';
+        mensaje.className = 'form-mensaje error';
+        return;
+      }
+
+      if (!emailValido) {
+        mensaje.textContent = 'Revisá tu email, no parece válido.';
+        mensaje.className = 'form-mensaje error';
+        return;
+      }
+
+      // Punto de integración: acá se enviaría el formulario a un
+      // servicio real (ej: fetch a un endpoint, WhatsApp, email, etc.)
+      mensaje.textContent = '¡Listo, ' + nombre.split(' ')[0] + '! Te contactamos a la brevedad.';
+      mensaje.className = 'form-mensaje ok';
+      form.reset();
+    });
+  })();
+</script>
+
 </body>
 </html>
