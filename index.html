@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotizador de Cajas - Cartón Corrugado</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --kraft: #C8A882;
+            --kraft-dark: #9D7E54;
+            --cardboard: #D4A574;
+            --ink-black: #1a1a1a;
+            --ink-blue: #2B4C7E;
+            --paper-white: #F5F1E8;
+            --corrugation: #E8DCC4;
+            --shadow: rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: linear-gradient(135deg, var(--paper-white) 0%, var(--corrugation) 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(200, 168, 130, 0.03) 2px, rgba(200, 168, 130, 0.03) 4px),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(200, 168, 130, 0.03) 2px, rgba(200, 168, 130, 0.03) 4px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4.5rem;
+            color: var(--ink-black);
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 0 var(--kraft);
+            line-height: 1;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--ink-blue);
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 2px;
+            padding: 40px;
+            box-shadow: 
+                8px 8px 0 var(--kraft),
+                12px 12px 20px var(--shadow);
+            border: 3px solid var(--ink-black);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px dashed var(--kraft);
+            pointer-events: none;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            color: var(--ink-blue);
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            border-bottom: 3px solid var(--kraft);
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--ink-black);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--ink-black);
+            border-radius: 0;
+            font-size: 1rem;
+            font-family: 'Work Sans', sans-serif;
+            background: var(--paper-white);
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--ink-blue);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(43, 76, 126, 0.1);
+        }
+
+        input[type="number"] {
+            font-weight: 600;
+        }
+
+        .dimension-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .dimension-inputs input {
+            text-align: center;
+        }
+
+        .dimension-labels {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .dimension-labels span {
+            font-size: 0.75rem;
+            color: var(--ink-blue);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--ink-blue);
+            color: white;
+            border: 3px solid var(--ink-black);
+            border-radius: 0;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 4px 4px 0 var(--ink-black);
+            position: relative;
+        }
+
+        .btn:hover {
+            background: var(--ink-black);
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 var(--ink-black);
+        }
+
+        .btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0 0 0 var(--ink-black);
+        }
+
+        .results-card {
+            background: linear-gradient(135deg, var(--kraft) 0%, var(--cardboard) 100%);
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .results-card h2 {
+            color: white;
+            border-bottom-color: white;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.3);
+            animation: slideInRight 0.5s ease-out both;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--ink-black);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .total-price {
+            margin-top: 30px;
+            padding: 25px;
+            background: white;
+            border: 3px solid var(--ink-black);
+            text-align: center;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        .total-label {
+            font-size: 1rem;
+            color: var(--ink-blue);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .total-amount {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3.5rem;
+            color: var(--ink-black);
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        .empty-state svg {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .info-badge {
+            display: inline-block;
+            background: var(--ink-blue);
+            color: white;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+
+            .card {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2.5rem;
+                text-shadow: 2px 2px 0 var(--kraft);
+            }
+
+            .dimension-inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .dimension-labels {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            margin-left: 5px;
+            width: 18px;
+            height: 18px;
+            background: var(--kraft);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 12px;
+            line-height: 18px;
+            font-weight: bold;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ink-black);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            white-space: nowrap;
+            font-size: 0.8rem;
+            font-weight: normal;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>COTIZADOR</h1>
+            <p class="subtitle">Cajas de Cartón Corrugado</p>
+        </header>
+
+        <div class="main-content">
+            <div class="card">
+                <h2>Configuración</h2>
+                <form id="quoteForm">
+                    <div class="form-group">
+                        <label>
+                            Dimensiones (cm)
+                            <span class="tooltip" data-tip="Largo x Ancho x Alto en centímetros">?</span>
+                        </label>
+                        <div class="dimension-labels">
+                            <span>Largo</span>
+                            <span>Ancho</span>
+                            <span>Alto</span>
+                        </div>
+                        <div class="dimension-inputs">
+                            <input type="number" id="length" min="1" step="0.1" placeholder="30" required>
+                            <input type="number" id="width" min="1" step="0.1" placeholder="20" required>
+                            <input type="number" id="height" min="1" step="0.1" placeholder="15" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="corrugation">Tipo de Corrugado</label>
+                        <select id="corrugation" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="simple">Simple (Onda C)</option>
+                            <option value="doble">Doble (BC)</option>
+                            <option value="triple">Triple (AAA)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantity">
+                            Cantidad
+                            <span class="info-badge">Descuentos por volumen</span>
+                        </label>
+                        <input type="number" id="quantity" min="1" placeholder="100" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="printing">Impresión</label>
+                        <select id="printing" required>
+                            <option value="none">Sin impresión</option>
+                            <option value="one-color">1 color</option>
+                            <option value="two-color">2 colores</option>
+                            <option value="full-color">Full color</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customization">Personalización adicional</label>
+                        <select id="customization">
+                            <option value="none">Ninguna</option>
+                            <option value="handle">Manijas troqueladas</option>
+                            <option value="window">Ventana de acetato</option>
+                            <option value="special">Diseño especial</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn">Calcular Cotización</button>
+                </form>
+            </div>
+
+            <div class="card results-card">
+                <h2>Resultados</h2>
+                <div id="results">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="20" width="80" height="60" stroke="white" stroke-width="3" fill="none"/>
+                            <line x1="10" y1="35" x2="90" y2="35" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
+                            <line x1="10" y1="50" x2="90" y2="50" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
+                            <line x1="10" y1="65" x2="90" y2="65" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
+                            <line x1="30" y1="20" x2="30" y2="80" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
+                            <line x1="50" y1="20" x2="50" y2="80" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
+                            <line x1="70" y1="20" x2="70" y2="80" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
+                        </svg>
+                        <p>Completa el formulario para ver tu cotización</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Precios base (en pesos argentinos)
+        const PRICING = {
+            corrugation: {
+                simple: 150,
+                doble: 280,
+                triple: 450
+            },
+            printing: {
+                none: 0,
+                'one-color': 50,
+                'two-color': 95,
+                'full-color': 180
+            },
+            customization: {
+                none: 0,
+                handle: 35,
+                window: 60,
+                special: 120
+            },
+            // Factor de área (precio por cm² de cartón)
+            areaFactor: 0.08
+        };
+
+        // Descuentos por cantidad
+        const DISCOUNTS = [
+            { min: 1000, discount: 0.25, label: '25%' },
+            { min: 500, discount: 0.18, label: '18%' },
+            { min: 200, discount: 0.12, label: '12%' },
+            { min: 100, discount: 0.08, label: '8%' },
+            { min: 50, discount: 0.05, label: '5%' }
+        ];
+
+        function calculateArea(length, width, height) {
+            // Fórmula para calcular área total de una caja rectangular desplegada
+            // 2 * (largo * ancho + ancho * alto + alto * largo)
+            return 2 * (length * width + width * height + height * length);
+        }
+
+        function getDiscount(quantity) {
+            for (let tier of DISCOUNTS) {
+                if (quantity >= tier.min) {
+                    return tier;
+                }
+            }
+            return { min: 0, discount: 0, label: '0%' };
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-AR', {
+                style: 'currency',
+                currency: 'ARS',
+                minimumFractionDigits: 2
+            }).format(price);
+        }
+
+        document.getElementById('quoteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Obtener valores
+            const length = parseFloat(document.getElementById('length').value);
+            const width = parseFloat(document.getElementById('width').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const corrugation = document.getElementById('corrugation').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const printing = document.getElementById('printing').value;
+            const customization = document.getElementById('customization').value;
+
+            // Validar
+            if (!corrugation) {
+                alert('Por favor selecciona el tipo de corrugado');
+                return;
+            }
+
+            // Calcular
+            const area = calculateArea(length, width, height);
+            const materialCost = area * PRICING.areaFactor;
+            const corrugationCost = PRICING.corrugation[corrugation];
+            const printingCost = PRICING.printing[printing];
+            const customizationCost = PRICING.customization[customization];
+
+            const unitPrice = materialCost + corrugationCost + printingCost + customizationCost;
+            const subtotal = unitPrice * quantity;
+
+            const discountTier = getDiscount(quantity);
+            const discountAmount = subtotal * discountTier.discount;
+            const total = subtotal - discountAmount;
+
+            // Mostrar resultados
+            displayResults({
+                area,
+                unitPrice,
+                quantity,
+                subtotal,
+                discountTier,
+                discountAmount,
+                total,
+                length,
+                width,
+                height
+            });
+        });
+
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = `
+                <div style="animation-delay: 0.1s" class="result-item">
+                    <span class="result-label">Dimensiones</span>
+                    <span class="result-value">${data.length} × ${data.width} × ${data.height} cm</span>
+                </div>
+                <div style="animation-delay: 0.2s" class="result-item">
+                    <span class="result-label">Área total</span>
+                    <span class="result-value">${data.area.toFixed(2)} cm²</span>
+                </div>
+                <div style="animation-delay: 0.3s" class="result-item">
+                    <span class="result-label">Precio unitario</span>
+                    <span class="result-value">${formatPrice(data.unitPrice)}</span>
+                </div>
+                <div style="animation-delay: 0.4s" class="result-item">
+                    <span class="result-label">Cantidad</span>
+                    <span class="result-value">${data.quantity} unidades</span>
+                </div>
+                <div style="animation-delay: 0.5s" class="result-item">
+                    <span class="result-label">Subtotal</span>
+                    <span class="result-value">${formatPrice(data.subtotal)}</span>
+                </div>
+            `;
+
+            if (data.discountTier.discount > 0) {
+                html += `
+                    <div style="animation-delay: 0.6s" class="result-item">
+                        <span class="result-label">Descuento (${data.discountTier.label})</span>
+                        <span class="result-value">-${formatPrice(data.discountAmount)}</span>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="total-price">
+                    <div class="total-label">Total</div>
+                    <div class="total-amount">${formatPrice(data.total)}</div>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
